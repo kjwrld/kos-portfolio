@@ -61,3 +61,6 @@ Thumbs.db
 *.tmp
 *.temp
 .cache/
+
+# Large uncompressed 3D models (use optimized versions)
+src/assets/drone.glb

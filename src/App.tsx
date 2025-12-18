@@ -1,66 +1,55 @@
-import { MindMap } from './components/MindMap';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CustomCursor } from './components/CustomCursor';
-import { ProjectPage } from './components/ProjectPage';
 import { TopNav } from './components/TopNav';
-import { BottomNav } from './components/BottomNav';
-import { projects } from './data/projects';
+import { Home } from './pages/Home';
+import { Canvas } from './pages/Canvas';
+import { CV } from './pages/CV';
+import { Contact } from './pages/Contact';
 import { useState, useEffect, useRef } from 'react';
-import { AnimatePresence } from 'motion/react';
 import { animationSequenceConfig } from './config/ui-defaults';
 import { useControls } from 'leva';
 
 type AnimationStage = 'idle' | 'top-nav-morph' | 'zoom' | 'node-details' | 'bottom-nav';
 
 export default function App() {
-  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
   const [hasSelectedNode, setHasSelectedNode] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<any>(null);
   const [animationStage, setAnimationStage] = useState<AnimationStage>('idle');
   const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
 
   // Animation Sequence Controls
   const sequenceConfig = useControls('Animation Sequence', {
-    stage1Delay: { 
-      value: animationSequenceConfig.stage1Delay, 
-      min: 0, 
-      max: 1000, 
-      step: 50, 
-      label: 'Stage 1: Nav Morph Delay (ms)' 
+    stage1Delay: {
+      value: animationSequenceConfig.stage1Delay,
+      min: 0,
+      max: 1000,
+      step: 50,
+      label: 'Stage 1: Nav Morph Delay (ms)'
     },
-    stage2Delay: { 
-      value: animationSequenceConfig.stage2Delay, 
-      min: 0, 
-      max: 2000, 
-      step: 50, 
-      label: 'Stage 2: Zoom Delay (ms)' 
+    stage2Delay: {
+      value: animationSequenceConfig.stage2Delay,
+      min: 0,
+      max: 2000,
+      step: 50,
+      label: 'Stage 2: Zoom Delay (ms)'
     },
-    stage3Delay: { 
-      value: animationSequenceConfig.stage3Delay, 
-      min: 0, 
-      max: 3000, 
-      step: 50, 
-      label: 'Stage 3: Node Details Delay (ms)' 
+    stage3Delay: {
+      value: animationSequenceConfig.stage3Delay,
+      min: 0,
+      max: 3000,
+      step: 50,
+      label: 'Stage 3: Node Details Delay (ms)'
     },
-    stage4Delay: { 
-      value: animationSequenceConfig.stage4Delay, 
-      min: 0, 
-      max: 4000, 
-      step: 50, 
-      label: 'Stage 4: Bottom Nav Delay (ms)' 
+    stage4Delay: {
+      value: animationSequenceConfig.stage4Delay,
+      min: 0,
+      max: 4000,
+      step: 50,
+      label: 'Stage 4: Bottom Nav Delay (ms)'
     },
   }, { collapsed: true });
 
-  const handleOpenProject = (projectId: string) => {
-    setCurrentProjectId(projectId);
-  };
-
-  const handleCloseProject = () => {
-    setCurrentProjectId(null);
-  };
-
-  const handleNodeSelectionChange = (hasSelection: boolean, projectData?: any) => {
+  const handleNodeSelectionChange = (hasSelection: boolean) => {
     setHasSelectedNode(hasSelection);
-    setSelectedProject(projectData);
   };
 
   // Animation sequence orchestrator
@@ -72,19 +61,19 @@ export default function App() {
     if (hasSelectedNode) {
       // Stage 1: Top Nav Morph (immediate)
       setAnimationStage('top-nav-morph');
-      
+
       // Stage 2: Zoom
       const stage2Timeout = setTimeout(() => {
         setAnimationStage('zoom');
       }, sequenceConfig.stage2Delay);
       timeoutRefs.current.push(stage2Timeout);
-      
+
       // Stage 3: Node Details (radial buttons + inspiration images)
       const stage3Timeout = setTimeout(() => {
         setAnimationStage('node-details');
       }, sequenceConfig.stage3Delay);
       timeoutRefs.current.push(stage3Timeout);
-      
+
       // Stage 4: Bottom Nav
       const stage4Timeout = setTimeout(() => {
         setAnimationStage('bottom-nav');
@@ -101,35 +90,31 @@ export default function App() {
     };
   }, [hasSelectedNode, sequenceConfig.stage2Delay, sequenceConfig.stage3Delay, sequenceConfig.stage4Delay]);
 
-  const currentProject = currentProjectId ? projects[currentProjectId] : null;
-
   return (
-    <div className="w-full h-screen">
-      <AnimatePresence mode="wait">
-        {currentProject ? (
-          <ProjectPage
-            key="project"
-            project={currentProject}
-            onClose={handleCloseProject}
+    <BrowserRouter>
+      <div className="w-full h-screen">
+        {/* TopNav shows on all pages */}
+        <TopNav hasSelectedNode={hasSelectedNode} animationStage={animationStage} />
+
+        {/* Routes */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/canvas"
+            element={
+              <Canvas
+                onNodeSelectionChange={handleNodeSelectionChange}
+                animationStage={animationStage}
+              />
+            }
           />
-        ) : (
-          <>
-            <MindMap 
-              key="mindmap" 
-              onOpenProject={handleOpenProject} 
-              onNodeSelectionChange={handleNodeSelectionChange}
-              animationStage={animationStage}
-            />
-            <TopNav hasSelectedNode={hasSelectedNode} animationStage={animationStage} />
-            <BottomNav 
-              hasSelectedNode={hasSelectedNode} 
-              selectedProject={selectedProject}
-              animationStage={animationStage}
-            />
-          </>
-        )}
-      </AnimatePresence>
-      <CustomCursor />
-    </div>
+          <Route path="/cv" element={<CV />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+
+        {/* Custom cursor shows on all pages */}
+        <CustomCursor />
+      </div>
+    </BrowserRouter>
   );
 }

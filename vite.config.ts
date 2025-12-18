@@ -4,6 +4,7 @@
   import path from 'path';
 
   export default defineConfig({
+    base: '/kos-portfolio/',
     plugins: [react()],
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
@@ -51,7 +52,8 @@
     },
     build: {
       target: 'esnext',
-      outDir: 'build',
+      outDir: 'dist',
+      assetsInlineLimit: 0, // Don't inline assets, keep them as separate files
     },
     server: {
       port: 3000,

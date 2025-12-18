@@ -1,6 +1,7 @@
 import { Home, LayoutGrid, User, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { topNavConfig } from '../config/ui-defaults';
 import { useControls } from 'leva';
 
@@ -10,11 +11,12 @@ interface TopNavProps {
 }
 
 export function TopNav({ hasSelectedNode, animationStage = 'idle' }: TopNavProps) {
-  const [activeIndex, setActiveIndex] = useState(0); // Start at 0 for Home
+  const navigate = useNavigate();
+  const location = useLocation();
   const [view, setView] = useState<'normal' | 'line'>('normal');
   const [variantKey, setVariantKey] = useState('idle');
   const activeStateWrapperRef = useRef<HTMLDivElement>(null);
-  
+
   // Morph when animation stage is 'top-nav-morph' or later (but node must be selected)
   const shouldMorph = hasSelectedNode && animationStage !== 'idle';
 
@@ -72,18 +74,22 @@ export function TopNav({ hasSelectedNode, animationStage = 'idle' }: TopNavProps
   });
 
   const navItems = [
-    { icon: Home, label: 'Home' },
-    { icon: LayoutGrid, label: 'Canvas' },
-    { icon: User, label: 'Timeline' },
-    { icon: Mail, label: 'Contact' },
+    { icon: Home, label: 'Home', path: '/' },
+    { icon: LayoutGrid, label: 'Canvas', path: '/canvas' },
+    { icon: User, label: 'CV', path: '/cv' },
+    { icon: Mail, label: 'Contact', path: '/contact' },
   ];
 
-  const handleItemClick = (index: number) => {
-    setActiveIndex(index);
+  // Determine active index based on current route
+  const activeIndex = navItems.findIndex(item => item.path === location.pathname);
+  const currentActiveIndex = activeIndex !== -1 ? activeIndex : 0;
+
+  const handleItemClick = (path: string) => {
+    navigate(path);
   };
 
   // Calculate clip path position based on active index
-  const clipPathX = (activeIndex * clipPath.itemWidth) + clipPath.xOffset;
+  const clipPathX = (currentActiveIndex * clipPath.itemWidth) + clipPath.xOffset;
 
   // Update view state when selection changes
   useEffect(() => {
@@ -148,7 +154,7 @@ export function TopNav({ hasSelectedNode, animationStage = 'idle' }: TopNavProps
             return (
               <button
                 key={index}
-                onClick={() => handleItemClick(index)}
+                onClick={() => handleItemClick(item.path)}
                 className="flex items-center justify-center flex-1 h-full transition-transform hover:scale-110"
                 aria-label={item.label}
               >
@@ -182,7 +188,7 @@ export function TopNav({ hasSelectedNode, animationStage = 'idle' }: TopNavProps
               return (
                 <button
                   key={index}
-                  onClick={() => handleItemClick(index)}
+                  onClick={() => handleItemClick(item.path)}
                   className="flex items-center justify-center flex-1 h-full pointer-events-none"
                   aria-label={item.label}
                 >

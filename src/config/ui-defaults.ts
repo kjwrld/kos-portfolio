@@ -36,7 +36,7 @@ export const tabletZoomConfig = {
   zoomLevel: 1.5,
   duration: 575, // ms
   offsetX: 0, // px
-  offsetY: 180, // px
+  offsetY: 130, // px
 };
 
 // Desktop Zoom Configuration
