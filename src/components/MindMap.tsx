@@ -124,7 +124,7 @@ function MindMapContent({ onOpenProject, onNodeSelectionChange, animationStage =
   const mobileZoom = useControls('Mobile Node Zoom', {
     enabled: { value: mobileZoomConfig.enabled, label: 'Enable Zoom' },
     zoomLevel: { value: 0.9, min: 0.5, max: 3, step: 0.1, label: 'Zoom Level' },
-    offsetY: { value: 160, min: -300, max: 500, step: 10, label: 'Offset Y' },
+    offsetY: { value: 240, min: -300, max: 500, step: 10, label: 'Offset Y' },
     duration: { value: mobileZoomConfig.duration, min: 100, max: 1000, step: 50, label: 'Duration (ms)' },
   });
 
