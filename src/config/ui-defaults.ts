@@ -27,7 +27,7 @@ export const mobileZoomConfig = {
   zoomLevel: 0.8,
   duration: 550, // ms
   offsetX: 0, // px
-  offsetY: 250, // px
+  offsetY: 240, // px
 };
 
 // Tablet Zoom Configuration

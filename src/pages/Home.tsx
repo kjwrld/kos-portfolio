@@ -4,9 +4,12 @@ import { Suspense, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import * as THREE from 'three';
 
+// Get the base URL from Vite
+const BASE_URL = import.meta.env.BASE_URL || '/';
+
 function Drone() {
   const group = useRef<THREE.Group>(null);
-  const { scene, animations } = useGLTF('/drone-optimized.glb');
+  const { scene, animations } = useGLTF(`${BASE_URL}drone-optimized.glb`);
   const { actions } = useAnimations(animations, group);
 
   // Play the hover animation on load

@@ -91,7 +91,7 @@ export default function App() {
   }, [hasSelectedNode, sequenceConfig.stage2Delay, sequenceConfig.stage3Delay, sequenceConfig.stage4Delay]);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <div className="w-full h-screen">
         {/* TopNav shows on all pages */}
         <TopNav hasSelectedNode={hasSelectedNode} animationStage={animationStage} />
