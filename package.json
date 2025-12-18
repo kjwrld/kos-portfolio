@@ -65,6 +65,6 @@
             "build": "vite build",
             "preview": "vite preview",
             "predeploy": "npm run build",
-            "deploy": "gh-pages -d dist -r https://github.com/kjwrld/kos-portfolio.git --no-lfs"
+            "deploy": "gh-pages -d dist -r https://github.com/kjwrld/kos-portfolio.git"
       }
 }

@@ -1,1 +1,1 @@
-*.glb filter=lfs diff=lfs merge=lfs -text
+# LFS removed - optimized GLB files are small enough for regular Git
